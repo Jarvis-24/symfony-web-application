@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sub Category{% endblock %}
+
+{% block body %}
+    <div class="container text-center">
+
+        <h2>Add Sub Category</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                {{ form_start(subCategoryForm, {'action': path('sub_category_add')}) }}
+
+                <div class="form-group">
+                    {{ form_row(subCategoryForm.parentCategory) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_row(subCategoryForm.categoryName) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_row(subCategoryForm.save) }}
+                </div>
+                {{ form_end(subCategoryForm) }}
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}

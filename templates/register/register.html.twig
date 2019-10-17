@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="signup text-center">
+            <h3>Sign Up</h3>
+
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+
+                    {{ form_start(signupForm, {'action': path('register')}) }}
+
+                    <div class="form-group">
+                        {{ form_row(signupForm.firstName) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(signupForm.lastName) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(signupForm.email) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(signupForm.password) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(signupForm.phoneNumber) }}
+                    </div>
+                    <div class="form-group category">
+                        {{ form_row(signupForm.category) }}
+                    </div>
+                    <div class="form-group category-form">
+
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(signupForm.description) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(signupForm.pictureFile) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(signupForm.videoFile) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(signupForm.save) }}
+                    </div>
+
+                    {{ form_end(signupForm) }}
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+
+        var i = 0;
+        $('#register_category').change(function () {
+            $('.category-form').html('');
+            var category = $(this);
+            var categoryId = category.attr("id");
+            $.ajax({
+                url: "{{ path('sub_categories_list') }}",
+                type: "GET",
+                data: {
+                    categoryid: category.val(),
+                },
+                success: function (subcategories) {
+                    if(subcategories.length > 0) {
+                        $(this).nextAll().remove();
+                        i = 1;
+
+                        $(".category-form").append('<label for="sub_category_1" class="required" id="subCategory_lable_1">Sub Category</label>');
+
+                        var newSelect = $("<select id='subCategory_level_1' required  name='subCategory-level[1]' data-id=1 class='form-control sub_category'></select>");
+                        $(".category-form").append(newSelect);
+                        newSelect.html('');
+                        newSelect.append('<option value> Select Sub Category ...</option>');
+
+                        $.each(subcategories, function (key, subcategory) {
+                            newSelect.append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
+                        });
+                        i = i + 1;
+                    } else {
+                        $(this).nextAll().remove();
+                    }
+                },
+                error: function (err) {
+                    alert("An error ocurred while loading data ...");
+                }
+            });
+        });
+
+        $(document).ajaxComplete(function() {
+            $('.sub_category').one('change', function () {
+                var category = $(this);
+                $(this).nextAll().remove();
+                var categoryId = category.attr("id");
+                $.ajax({
+                    url: "{{ path('sub_categories_list') }}",
+                    type: "GET",
+                    async: false,
+                    data: {
+                        categoryid: category.val(),
+                    },
+                    success: function (subcategories) {
+                        if (subcategories.length > 0) {
+                            var subCategoryId = $("#" + categoryId).attr("data-id");
+                            i = parseInt(subCategoryId);
+                            subCategoryId = parseInt(subCategoryId) + 1;
+
+                            $(".category-form").append('<label for="sub_category_' + subCategoryId + '" id="subCategory_lable_' + subCategoryId + '" style="margin-top: 15px;">Sub Category</label>');
+
+                            var newSelect = $("<select   id='subCategory_level_" + subCategoryId + "' name='subCategory-level[" + subCategoryId + "]' required class='form-control sub_category' data-id=" + subCategoryId + "></select>");
+
+                            $(".category-form").append(newSelect);
+                            newSelect.html('');
+                            newSelect.append('<option value> Select Sub Category ...</option>');
+                            $.each(subcategories, function (key, subcategory) {
+                                newSelect.append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
+                            });
+                            i = i + 1;
+                        } else {
+                            $(this).nextAll().remove();
+                        }
+                    },
+                    error: function (err) {
+                        alert("An error ocurred while loading data ...");
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

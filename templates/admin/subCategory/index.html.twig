@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sub Category{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <h2>Sub Category</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <a href="{{ url('sub_category_add') }}" class="btn btn-success btn-lg">
+                    <span class="glyphicon glyphicon-add"></span> Add New Sub Category
+                </a>
+            </div>
+        </div>
+
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Sub Category</th>
+                <th scope="col">Category</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if subCategories|length > 0 %}
+            {% for subCategory in subCategories %}
+                <tr>
+                    <td>{{ subCategory.categoryName }}</td>
+                    <td>{{ subCategory.parentCategory.categoryName }}</td>
+                    <td>
+                        <a href="{{ path('sub_category_edit',{'id': subCategory.id }) }}" class="btn btn-info btn-lg">
+                            <span class="glyphicon glyphicon-edit"></span> Edit
+                        </a>
+                        <a href="{{ path('sub_category_remove',{'id': subCategory.id }) }}" onclick="return confirm('{{ 'Are you sure you want to delete category ' ~ subCategory.categoryName }}')" class="btn btn-danger btn-lg">
+                            <span class="glyphicon glyphicon-remove"></span> Delete
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% else %}
+                <tr>
+                    <td>You don't have any sub category.</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
